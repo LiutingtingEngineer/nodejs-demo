@@ -1,0 +1,48 @@
+component: http@dev
+name: noah-backend-v2-test
+stage: ${env:stage}
+
+inputs:
+  region: ${env:region}
+  zone: ${env:zone}
+  src:
+    dist: ./
+    hook: npm --prefix ./server run build
+    exclude:
+      - node_modules
+      # - .env
+  faas:
+    runtime: ${env:runtime}
+    framework: nestjs
+    name: ${name}
+    # vpc:
+      # vpcId: ${output:${stage}:${app}:noah-vpc.vpcId}
+      # subnetId: ${output:${stage}:${app}:noah-vpc.subnetId}
+      # 使用固定 vpc, 部署 Noah-SH2-v2 后生成了新的 vpc 和 noah-db 的 vpc 不一致(貌似沿用旧的Noah-SH2命名不变，vpc 也不会变)
+      # vpcId: vpc-dhd7l4um
+      # subnetId: subnet-s1l5k69h
+    environments:
+      - key: dbConnUrl
+        value: ''
+        # value: ${output:${stage}:${app}:noah-db.private.connectionString}
+      - key: JWT_SECRET
+        value: ${env:JWT_SECRET}
+      - key: MAIL_ADDRESS
+        value: ${env:MAIL_ADDRESS}
+      - key: MAIL_PASSWORD
+        value: ${env:MAIL_PASSWORD}
+      - key: COS_SECRET_ID
+        value: ${env:COS_SECRET_ID}
+      - key: COS_SECRET_KEY
+        value: ${env:COS_SECRET_KEY}
+      - key: ALI_DM_ACCESS_ID
+        value: ${env:ALI_DM_ACCESS_ID}
+      - key: ALI_DM_ACCESS_KEY
+        value: ${env:ALI_DM_ACCESS_KEY}
+  apigw:
+    protocols:
+      - http
+      - https
+  layers:
+    - name: noah-layer
+      version: 5

@@ -1,0 +1,28 @@
+<!doctype html> 
+<html>
+   <head>
+      <meta charset="utf-8">
+      <title>WebAssembly Square function</title>
+      <style>
+         div { 
+            font-size : 30px; text-align : center; color:orange; 
+         } 
+      </style>
+   </head> 
+   <body>
+      <div id="textcontent"></div>
+      <script> 
+      fetch('./test.wasm')
+      .then(response => response.arrayBuffer())
+      .then(WebAssembly.instantiate)
+      .then(module => {
+        console.log(module)
+        const reversenumber = module.instance.exports.reversenumber;
+        const add = module.instance.exports.add
+        console.log(add(1,3))
+        console.log(reversenumber(12345678))
+        document.getElementById("textcontent").innerHTML = reversenumber(12345678);
+      }) 
+      </script>
+   </body>
+</html>

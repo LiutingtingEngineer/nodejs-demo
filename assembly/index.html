@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+      fetch('./test.wasm')
+      .then(response => response.arrayBuffer())
+      .then(WebAssembly.instantiate)
+      .then(result => {
+        const a = result.instance
+        console.log(a)
+      })
+
+      function fib(x){
+        if(x <= 0){
+            return 0
+        } 
+        if(x <= 2){
+            return 1
+        }
+        return fib(x-1) + fib(x-2)
+      }
+    </script>
+</body>
+</html>

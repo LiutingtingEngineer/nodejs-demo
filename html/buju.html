@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <button onclick="dosomething(this)">直接调用</button>
+    <button id="custome">自定义实现</button>
+    <button id="custome1">点击的位置实现</button>
+    <button id="custome2">自定义事件测试</button>
+    <div id="page">
+        <div class="main">
+            <div class="sub">
+            </div>
+        </div>
+        <div class="nav"></div>
+    </div>
+    <script>
+        // 自定义事件
+        const ele = document.getElementById("custome2");
+
+        function dosomething() {
+            alert(this);
+        }
+        document.getElementById("custome").onclick = dosomething;
+        document.getElementById("custome1").onclick = function () {
+            // dosomething()
+            ele.dispatchEvent(catFound)
+        }
+        // dosomething()
+
+        // 转toGRB
+        function toRGB(color) {
+            var str = ""
+            var result = [];
+            var reg = /^#[0-9a-zA-Z]{3}$/;
+            if (color == "invalid") { return "invalid"; }
+            if (reg.test(color)) {
+                return color;
+            } else {
+                for (var i = 1; i <= 6; i = i + 2) {
+                    str = color.slice(i, i + 2);
+                    console.log('截取了字符串的值：', str);
+                    var ss = parseInt(str, 16);
+                    result.push(ss);
+                }
+                return 'rgb(' + result.join(',') + ')';
+            }
+        }
+        console.log(toRGB("#1000FF"));
+
+
+        // 创建自定义事件
+        const catFound = new CustomEvent("animalfound", {
+            detail: {
+                name: "cat",
+            },
+        });
+        const dogFound = new CustomEvent("animalfound", {
+            detail: {
+                name: "dog",
+            },
+        });
+        // 添加适当的事件监听
+        ele.addEventListener("animalfound", (e) => console.log(e.detail.name));
+
+
+        // 实现5s后执行相关代码 --- 主要考察this的问题
+        var Obj = function (msg) {
+            this.msg = msg;
+            this.shout = function () {
+                alert(this.msg);
+            }
+            this.waitAndShout = function () {
+                const self = this;
+                setTimeout(function () {
+                    return function () {
+                        self.shout();
+                    }
+                }.call(this), 1000);
+            }
+        }
+        const instance = new Obj("hello world")
+        instance.waitAndShout();
+
+        // 是否为有效邮箱的正则表达式
+        // 邮箱正则表达式
+        var reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+        console.log(reg.test("wenyifandewutong@126.com"));
+
+    </script>
+    <style type="text/css">
+        #page {
+            width: 520px;
+        }
+
+        .nav {
+            width: 200px;
+            float: right;
+        }
+
+        .main {
+            width: 200px;
+            float: left;
+            padding-left: 110px;
+        }
+
+        .sub {
+            width: 100px;
+            float: left;
+            margin: 10px 0 10px -100px;
+        }
+
+        .main {
+            border: 1px solid #000;
+        }
+
+        .nav,
+        .sub {
+            border: 1px dashed #000;
+            height: 300px;
+        }
+
+        .sub {
+            height: 280px;
+        }
+    </style>
+</body>
+
+</html>
